@@ -1,0 +1,2332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Mobile App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .card-shadow {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .mobile-container {
+            max-width: 428px;
+            width: 100%;
+            margin: 0 auto;
+            background: #f5f5f5;
+            min-height: 100vh;
+            position: relative;
+            padding-bottom: 80px;
+        }
+        
+        @media (max-width: 428px) {
+            .mobile-container {
+                width: 100%;
+            }
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 428px;
+            height: 70px;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            z-index: 100;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 428px) {
+            .bottom-nav {
+                width: 100%;
+                left: 0;
+                transform: none;
+            }
+        }
+        
+        .language-menu {
+            position: absolute;
+            top: -90px;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            padding: 8px;
+            min-width: 150px;
+            display: none;
+            z-index: 200;
+        }
+        
+        .language-menu.show {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .language-option {
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            user-select: none;
+        }
+        
+        .language-option:hover {
+            background: #f3f4f6;
+        }
+        
+        .language-option.active {
+            background: #f3f4f6;
+            color: #9333ea;
+        }
+        
+        #languageBtn {
+            cursor: pointer;
+        }
+        
+        .language-text {
+            display: inline-block;
+        }
+        
+        .language-text.hidden {
+            display: none;
+        }
+        
+        #languageIcon.hidden {
+            display: none;
+        }
+        
+        .settings-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        
+        .settings-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .settings-page {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            max-width: 428px;
+            height: 100vh;
+            background: #f5f5f5;
+            z-index: 1001;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-out;
+            overflow-y: auto;
+        }
+        
+        .settings-page.show {
+            transform: translateX(0);
+        }
+        
+        .settings-header {
+            background: white;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .settings-item {
+            background: white;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #f3f4f6;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .settings-item:hover {
+            background: #f9fafb;
+        }
+        
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+        
+        .settings-section {
+            margin-top: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .settings-section-title {
+            padding: 0 20px 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 28px;
+            background: #d1d5db;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .toggle-switch.active {
+            background: #9333ea;
+        }
+        
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .toggle-switch.active::after {
+            transform: translateX(20px);
+        }
+        
+        .sub-page {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            max-width: 428px;
+            height: 100vh;
+            background: #f5f5f5;
+            z-index: 1002;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-out;
+            overflow-y: auto;
+        }
+        
+        .sub-page.show {
+            transform: translateX(0);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #9333ea;
+        }
+        
+        .avatar-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .avatar-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #e5e7eb;
+        }
+        
+        .avatar-upload-btn {
+            padding: 10px 20px;
+            background: #9333ea;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        
+        .avatar-upload-btn:hover {
+            background: #7e22ce;
+        }
+        
+        .faq-item {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        
+        .faq-question {
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .faq-question:hover {
+            background: #f9fafb;
+        }
+        
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s, padding 0.3s;
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            padding: 0 20px 16px;
+        }
+        
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 200px);
+            background: white;
+            border-radius: 12px;
+            margin: 16px;
+            overflow: hidden;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            background: #f9fafb;
+        }
+        
+        .chat-message {
+            margin-bottom: 16px;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .chat-message.user {
+            flex-direction: row-reverse;
+        }
+        
+        .message-bubble {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .message-bubble.admin {
+            background: white;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .message-bubble.user {
+            background: #9333ea;
+            color: white;
+        }
+        
+        .chat-input-area {
+            padding: 12px 16px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 8px;
+            background: white;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 10px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .chat-send-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #9333ea;
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .chat-send-btn:hover {
+            background: #7e22ce;
+        }
+        
+        .dark-mode {
+            background: #111827;
+            color: #f9fafb;
+        }
+        
+        .dark-mode .mobile-container {
+            background: #111827;
+        }
+        
+        .dark-mode .settings-page,
+        .dark-mode .sub-page {
+            background: #111827;
+            color: #f9fafb;
+        }
+        
+        .dark-mode .settings-header,
+        .dark-mode .sub-page-header {
+            background: #1f2937;
+            border-color: #374151;
+        }
+        
+        .dark-mode .settings-header h2,
+        .dark-mode .sub-page-header h2 {
+            color: #f9fafb;
+        }
+        
+        .dark-mode .settings-item,
+        .dark-mode .form-group,
+        .dark-mode .faq-item {
+            background: #1f2937;
+            border-color: #374151;
+        }
+        
+        .dark-mode .settings-item .font-semibold,
+        .dark-mode .settings-section-title {
+            color: #f9fafb;
+        }
+        
+        .dark-mode .settings-item .text-xs,
+        .dark-mode .text-gray-500,
+        .dark-mode .text-gray-600 {
+            color: #d1d5db !important;
+        }
+        
+        .dark-mode .settings-item:hover {
+            background: #374151;
+        }
+        
+        .dark-mode .form-label {
+            color: #f9fafb;
+        }
+        
+        .dark-mode .form-input,
+        .dark-mode .chat-input {
+            background: #374151;
+            border-color: #4b5563;
+            color: #f9fafb;
+        }
+        
+        .dark-mode .form-input::placeholder,
+        .dark-mode .chat-input::placeholder {
+            color: #9ca3af;
+        }
+        
+        .dark-mode .chat-messages {
+            background: #111827;
+        }
+        
+        .dark-mode .message-bubble.admin {
+            background: #374151;
+            color: #f9fafb;
+            border-color: #4b5563;
+        }
+        
+        .dark-mode .faq-question {
+            color: #f9fafb;
+        }
+        
+        .dark-mode .faq-question:hover {
+            background: #374151;
+        }
+        
+        .dark-mode .faq-answer {
+            color: #d1d5db;
+        }
+        
+        .dark-mode .bg-white {
+            background: #1f2937 !important;
+        }
+        
+        .dark-mode .bg-gray-50 {
+            background: #111827 !important;
+        }
+        
+        .dark-mode .text-gray-800 {
+            color: #f9fafb !important;
+        }
+        
+        .dark-mode .text-gray-700 {
+            color: #e5e7eb !important;
+        }
+        
+        .dark-mode header {
+            background: #1f2937 !important;
+        }
+        
+        .dark-mode header h2,
+        .dark-mode header p {
+            color: #f9fafb !important;
+        }
+        
+        .dark-mode section {
+            background: #1f2937 !important;
+        }
+        
+        .dark-mode section h3,
+        .dark-mode section h4,
+        .dark-mode section h5 {
+            color: #f9fafb !important;
+        }
+        
+        .dark-mode section p,
+        .dark-mode section span {
+            color: #d1d5db !important;
+        }
+        
+        .dark-mode .card-shadow {
+            background: #1f2937 !important;
+        }
+        
+        .dark-mode .bottom-nav {
+            background: #1f2937 !important;
+            border-color: #374151 !important;
+        }
+        
+        .dark-mode .bottom-nav .text-gray-400 {
+            color: #9ca3af !important;
+        }
+        
+        .dark-mode .bottom-nav .text-purple-600 {
+            color: #a855f7 !important;
+        }
+        
+        .dark-mode .settings-content {
+            background: #111827;
+        }
+        
+        .dark-mode .chat-container {
+            background: #1f2937;
+        }
+        
+        .dark-mode .chat-input-area {
+            background: #1f2937;
+            border-color: #374151;
+        }
+        
+        .dark-mode .bg-white.rounded-xl,
+        .dark-mode .bg-white.rounded-2xl,
+        .dark-mode .bg-white.rounded-lg {
+            background: #1f2937 !important;
+        }
+        
+        .dark-mode .flex.justify-between .text-gray-600 {
+            color: #d1d5db !important;
+        }
+        
+        .dark-mode .flex.justify-between .font-semibold {
+            color: #f9fafb !important;
+        }
+        
+        .dark-mode .text-sm.text-gray-600 {
+            color: #d1d5db !important;
+        }
+        
+        .dark-mode .text-sm.text-gray-500 {
+            color: #9ca3af !important;
+        }
+        
+        .dark-mode .text-xs.text-gray-500 {
+            color: #9ca3af !important;
+        }
+        
+        .dark-mode .text-xs.text-gray-700 {
+            color: #d1d5db !important;
+        }
+        
+        .dark-mode .bg-gray-100 {
+            background: #374151 !important;
+        }
+        
+        .dark-mode .bg-gray-100 i {
+            color: #f9fafb !important;
+        }
+        
+        .dark-mode .hover\:bg-gray-200:hover {
+            background: #4b5563 !important;
+        }
+        
+        .dark-mode .border-gray-200 {
+            border-color: #374151 !important;
+        }
+        
+        .dark-mode .border-t {
+            border-color: #374151 !important;
+        }
+        
+        .dark-mode .rounded-lg,
+        .dark-mode .rounded-xl,
+        .dark-mode .rounded-2xl {
+            border-color: #374151;
+        }
+        
+        .dark-mode .shadow-sm {
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        .dark-mode .card-shadow {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .dark-mode .language-menu {
+            background: #1f2937;
+            border-color: #374151;
+        }
+        
+        .dark-mode .language-option {
+            color: #f9fafb;
+        }
+        
+        .dark-mode .language-option:hover {
+            background: #374151;
+        }
+        
+        .dark-mode .language-option.active {
+            background: #374151;
+            color: #a855f7;
+        }
+        
+        .dark-mode .settings-overlay {
+            background: rgba(0, 0, 0, 0.8);
+        }
+        
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .auth-overlay.hidden {
+            display: none;
+        }
+        
+        .auth-container {
+            width: 100%;
+            max-width: 428px;
+            background: white;
+            border-radius: 24px;
+            padding: 32px 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .auth-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 16px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .auth-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
+        }
+        
+        .auth-subtitle {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .auth-input-group {
+            position: relative;
+        }
+        
+        .auth-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        
+        .auth-input:focus {
+            outline: none;
+            border-color: #9333ea;
+            box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
+        }
+        
+        .auth-input-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        
+        .auth-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .auth-btn:active {
+            transform: translateY(0);
+        }
+        
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 24px 0;
+            color: #9ca3af;
+            font-size: 14px;
+        }
+        
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e5e7eb;
+        }
+        
+        .auth-link {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .auth-link a {
+            color: #9333ea;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .auth-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .auth-page.hidden {
+            display: none;
+        }
+        
+        .dark-mode .auth-container {
+            background: #1f2937;
+        }
+        
+        .dark-mode .auth-title {
+            color: #f9fafb;
+        }
+        
+        .dark-mode .auth-subtitle {
+            color: #d1d5db;
+        }
+        
+        .dark-mode .auth-input {
+            background: #374151;
+            border-color: #4b5563;
+            color: #f9fafb;
+        }
+        
+        .dark-mode .auth-input:focus {
+            border-color: #9333ea;
+        }
+        
+        .dark-mode .auth-link {
+            color: #d1d5db;
+        }
+        
+        .dark-mode .auth-divider {
+            color: #9ca3af;
+        }
+        
+        .dark-mode .auth-divider::before,
+        .dark-mode .auth-divider::after {
+            background: #4b5563;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4">
+    <!-- Login/Register Overlay -->
+    <div id="authOverlay" class="auth-overlay">
+        <!-- Login Page -->
+        <div id="loginPage" class="auth-page auth-container">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <i class="fas fa-mobile-alt text-white text-3xl"></i>
+                </div>
+                <h1 class="auth-title" data-i18n="login.title">Welcome Back</h1>
+                <p class="auth-subtitle" data-i18n="login.subtitle">Sign in to continue</p>
+            </div>
+            <form class="auth-form" id="loginForm">
+                <div class="auth-input-group">
+                    <input type="text" id="loginUsername" class="auth-input" placeholder="Username" data-i18n-placeholder="login.usernamePlaceholder" required>
+                    <i class="fas fa-user auth-input-icon"></i>
+                </div>
+                <div class="auth-input-group">
+                    <input type="password" id="loginPassword" class="auth-input" placeholder="Password" data-i18n-placeholder="login.passwordPlaceholder" required>
+                    <i class="fas fa-lock auth-input-icon"></i>
+                </div>
+                <button type="submit" class="auth-btn" data-i18n="login.button">Login</button>
+            </form>
+            <div class="auth-link">
+                <span data-i18n="login.noAccount">Don't have an account?</span>
+                <a id="showRegisterBtn" data-i18n="login.registerLink">Register</a>
+            </div>
+        </div>
+        
+        <!-- Register Page -->
+        <div id="registerPage" class="auth-page auth-container hidden">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <i class="fas fa-user-plus text-white text-3xl"></i>
+                </div>
+                <h1 class="auth-title" data-i18n="register.title">Create Account</h1>
+                <p class="auth-subtitle" data-i18n="register.subtitle">Sign up to get started</p>
+            </div>
+            <form class="auth-form" id="registerForm">
+                <div class="auth-input-group">
+                    <input type="text" id="registerFullName" class="auth-input" placeholder="Full Name" data-i18n-placeholder="register.fullNamePlaceholder" required>
+                    <i class="fas fa-user auth-input-icon"></i>
+                </div>
+                <div class="auth-input-group">
+                    <input type="email" id="registerEmail" class="auth-input" placeholder="Email" data-i18n-placeholder="register.emailPlaceholder" required>
+                    <i class="fas fa-envelope auth-input-icon"></i>
+                </div>
+                <div class="auth-input-group">
+                    <input type="text" id="registerUsername" class="auth-input" placeholder="Username" data-i18n-placeholder="register.usernamePlaceholder" required>
+                    <i class="fas fa-at auth-input-icon"></i>
+                </div>
+                <div class="auth-input-group">
+                    <input type="tel" id="registerPhone" class="auth-input" placeholder="Phone Number" data-i18n-placeholder="register.phonePlaceholder" required>
+                    <i class="fas fa-phone auth-input-icon"></i>
+                </div>
+                <div class="auth-input-group">
+                    <input type="password" id="registerPassword" class="auth-input" placeholder="Password" data-i18n-placeholder="register.passwordPlaceholder" required>
+                    <i class="fas fa-lock auth-input-icon"></i>
+                </div>
+                <div class="auth-input-group">
+                    <input type="password" id="registerConfirmPassword" class="auth-input" placeholder="Confirm Password" data-i18n-placeholder="register.confirmPasswordPlaceholder" required>
+                    <i class="fas fa-lock auth-input-icon"></i>
+                </div>
+                <button type="submit" class="auth-btn" data-i18n="register.button">Register</button>
+            </form>
+            <div class="auth-link">
+                <span data-i18n="register.haveAccount">Already have an account?</span>
+                <a id="showLoginBtn" data-i18n="register.loginLink">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="mobile-container card-shadow rounded-3xl overflow-hidden">
+        <!-- Header -->
+        <header class="bg-white px-6 py-4 flex items-center justify-between sticky top-0 z-50 shadow-sm">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                    <i class="fas fa-user text-white text-sm"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-800" data-i18n="header.greeting">Hello, User</h2>
+                    <p class="text-xs text-gray-500" data-i18n="header.welcome">Welcome back!</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
+                    <i class="fas fa-bell text-gray-600"></i>
+                </button>
+                <button class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
+                    <i class="fas fa-search text-gray-600"></i>
+                </button>
+                <div class="relative">
+                    <button id="languageBtn" class="language-btn w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
+                        <i id="languageIcon" class="fas fa-globe text-gray-600"></i>
+                        <span id="languageText" class="language-text text-xs font-semibold text-gray-700 hidden">EN</span>
+                    </button>
+                    <div id="languageMenu" class="language-menu">
+                        <div class="language-option active" data-lang="en">
+                            <i class="fas fa-check-circle text-purple-600"></i>
+                            <span>English (EN)</span>
+                        </div>
+                        <div class="language-option" data-lang="bn">
+                            <i class="fas fa-circle text-gray-300"></i>
+                            <span>বাংলা (BN)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="px-6 py-6 bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 text-white">
+            <div class="slide-in">
+                <h1 class="text-3xl font-bold mb-2" data-i18n="hero.title1">Discover Amazing</h1>
+                <h1 class="text-3xl font-bold mb-4" data-i18n="hero.title2">Experiences</h1>
+                <p class="text-purple-100 mb-6 text-sm" data-i18n="hero.description">Explore the best features and services we offer</p>
+                
+                <div class="flex space-x-3">
+                    <button class="bg-white text-purple-600 px-6 py-3 rounded-xl font-semibold flex-1 hover:bg-purple-50 transition" data-i18n="hero.button">
+                        Get Started
+                    </button>
+                    <button class="bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-xl font-semibold border border-white/30 hover:bg-white/30 transition">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="px-6 py-6 bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-800" data-i18n="quickActions.title">Quick Actions</h3>
+                <button class="text-purple-600 text-sm font-medium" data-i18n="quickActions.seeAll">See All</button>
+            </div>
+            <div class="grid grid-cols-4 gap-4">
+                <button class="flex flex-col items-center space-y-2 p-3 rounded-xl bg-gray-50 hover:bg-purple-50 transition">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
+                        <i class="fas fa-home text-white"></i>
+                    </div>
+                    <span class="text-xs text-gray-700 font-medium" data-i18n="quickActions.home">Home</span>
+                </button>
+                <button class="flex flex-col items-center space-y-2 p-3 rounded-xl bg-gray-50 hover:bg-purple-50 transition">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
+                        <i class="fas fa-wallet text-white"></i>
+                    </div>
+                    <span class="text-xs text-gray-700 font-medium" data-i18n="quickActions.wallet">Wallet</span>
+                </button>
+                <button class="flex flex-col items-center space-y-2 p-3 rounded-xl bg-gray-50 hover:bg-purple-50 transition">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
+                        <i class="fas fa-gift text-white"></i>
+                    </div>
+                    <span class="text-xs text-gray-700 font-medium" data-i18n="quickActions.rewards">Rewards</span>
+                </button>
+                <button id="settingsBtn" class="flex flex-col items-center space-y-2 p-3 rounded-xl bg-gray-50 hover:bg-purple-50 transition">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center">
+                        <i class="fas fa-cog text-white"></i>
+                    </div>
+                    <span class="text-xs text-gray-700 font-medium" data-i18n="quickActions.settings">Settings</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Featured Cards -->
+        <section class="px-6 py-6 bg-gray-50">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-800" data-i18n="featured.title">Featured</h3>
+                <button class="text-purple-600 text-sm font-medium" data-i18n="featured.viewAll">View All</button>
+            </div>
+            <div class="space-y-4">
+                <div class="bg-white rounded-2xl p-5 card-shadow slide-in">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-1" data-i18n="featured.premium.title">Premium Service</h4>
+                            <p class="text-sm text-gray-500" data-i18n="featured.premium.description">Get access to exclusive features</p>
+                        </div>
+                        <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center">
+                            <i class="fas fa-star text-white text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl font-bold gradient-text">$29.99</span>
+                        <button class="bg-purple-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-purple-700 transition" data-i18n="featured.premium.button">
+                            Subscribe
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-5 card-shadow slide-in">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-1" data-i18n="featured.offer.title">Special Offer</h4>
+                            <p class="text-sm text-gray-500" data-i18n="featured.offer.description">Limited time discount available</p>
+                        </div>
+                        <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-orange-400 to-red-400 flex items-center justify-center">
+                            <i class="fas fa-fire text-white text-xl"></i>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl font-bold gradient-text">50% OFF</span>
+                        <button class="bg-orange-500 text-white px-5 py-2 rounded-lg font-medium hover:bg-orange-600 transition" data-i18n="featured.offer.button">
+                            Claim Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Activity -->
+        <section class="px-6 py-6 bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-800" data-i18n="activity.title">Recent Activity</h3>
+                <button class="text-purple-600 text-sm font-medium" data-i18n="activity.seeAll">See All</button>
+            </div>
+            <div class="space-y-3">
+                <div class="flex items-center space-x-4 p-3 rounded-xl hover:bg-gray-50 transition">
+                    <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                        <i class="fas fa-check-circle text-blue-600"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h5 class="text-sm font-semibold text-gray-800">Payment Received</h5>
+                        <p class="text-xs text-gray-500">2 hours ago</p>
+                    </div>
+                    <span class="text-sm font-semibold text-green-600">+$150</span>
+                </div>
+                <div class="flex items-center space-x-4 p-3 rounded-xl hover:bg-gray-50 transition">
+                    <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
+                        <i class="fas fa-shopping-bag text-purple-600"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h5 class="text-sm font-semibold text-gray-800">Order Placed</h5>
+                        <p class="text-xs text-gray-500">5 hours ago</p>
+                    </div>
+                    <span class="text-sm font-semibold text-red-600">-$45</span>
+                </div>
+                <div class="flex items-center space-x-4 p-3 rounded-xl hover:bg-gray-50 transition">
+                    <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                        <i class="fas fa-gift text-green-600"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h5 class="text-sm font-semibold text-gray-800">Reward Claimed</h5>
+                        <p class="text-xs text-gray-500">1 day ago</p>
+                    </div>
+                    <span class="text-sm font-semibold text-purple-600">+50 pts</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <div class="flex justify-around items-center h-full px-6">
+                <button class="nav-item flex flex-col items-center justify-center space-y-1 text-purple-600" data-nav="home">
+                    <i class="fas fa-home text-xl"></i>
+                    <span class="text-xs font-medium" data-i18n="nav.home">Home</span>
+                </button>
+                <button class="nav-item flex flex-col items-center justify-center space-y-1 text-gray-400 hover:text-purple-600 transition" data-nav="explore">
+                    <i class="fas fa-compass text-xl"></i>
+                    <span class="text-xs font-medium" data-i18n="nav.explore">Explore</span>
+                </button>
+                <button class="nav-item flex flex-col items-center justify-center space-y-1 text-gray-400 hover:text-purple-600 transition" data-nav="favorites">
+                    <i class="fas fa-heart text-xl"></i>
+                    <span class="text-xs font-medium" data-i18n="nav.favorites">Favorites</span>
+                </button>
+                <button class="nav-item flex flex-col items-center justify-center space-y-1 text-gray-400 hover:text-purple-600 transition" data-nav="profile">
+                    <i class="fas fa-user text-xl"></i>
+                    <span class="text-xs font-medium" data-i18n="nav.profile">Profile</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Settings Overlay -->
+    <div id="settingsOverlay" class="settings-overlay"></div>
+    
+    <!-- Settings Page -->
+    <div id="settingsPage" class="settings-page">
+        <div class="settings-header">
+            <h2 class="text-xl font-bold text-gray-800" data-i18n="settings.title">Settings</h2>
+            <button id="closeSettingsBtn" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
+                <i class="fas fa-times text-gray-600"></i>
+            </button>
+        </div>
+        
+        <div class="settings-content">
+            <!-- Account Section -->
+            <div class="settings-section">
+                <div class="settings-section-title" data-i18n="settings.account">Account</div>
+                <div class="bg-white rounded-lg mx-4 mb-4 overflow-hidden">
+                    <div class="settings-item" id="profileSettingsItem">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center">
+                                <i class="fas fa-user text-white"></i>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-gray-800" data-i18n="settings.profile">Profile</div>
+                                <div class="text-xs text-gray-500" data-i18n="settings.profileDesc">Manage your personal information</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                    <div class="settings-item" id="securitySettingsItem">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
+                                <i class="fas fa-shield-alt text-white"></i>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-gray-800" data-i18n="settings.security">Security</div>
+                                <div class="text-xs text-gray-500" data-i18n="settings.securityDesc">Password and privacy settings</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Preferences Section -->
+            <div class="settings-section">
+                <div class="settings-section-title" data-i18n="settings.preferences">Preferences</div>
+                <div class="bg-white rounded-lg mx-4 mb-4 overflow-hidden">
+                    <div class="settings-item" id="languageSettingsItem">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
+                                <i class="fas fa-globe text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-semibold text-gray-800" data-i18n="settings.language">Language</div>
+                                <div class="text-xs text-gray-500" id="currentLanguageDisplay">English</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                    <div class="settings-item">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
+                                <i class="fas fa-bell text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-semibold text-gray-800" data-i18n="settings.notifications">Notifications</div>
+                                <div class="text-xs text-gray-500" data-i18n="settings.notificationsDesc">Manage notification preferences</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch active" id="notificationToggle"></div>
+                    </div>
+                    <div class="settings-item">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center">
+                                <i class="fas fa-moon text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-semibold text-gray-800" data-i18n="settings.darkMode">Dark Mode</div>
+                                <div class="text-xs text-gray-500" data-i18n="settings.darkModeDesc">Switch to dark theme</div>
+                            </div>
+                        </div>
+                        <div class="toggle-switch" id="darkModeToggle"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Support Section -->
+            <div class="settings-section">
+                <div class="settings-section-title" data-i18n="settings.support">Support</div>
+                <div class="bg-white rounded-lg mx-4 mb-4 overflow-hidden">
+                    <div class="settings-item" id="helpSettingsItem">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center">
+                                <i class="fas fa-question-circle text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-semibold text-gray-800" data-i18n="settings.help">Help & Support</div>
+                                <div class="text-xs text-gray-500" data-i18n="settings.helpDesc">Get help and contact support</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                    <div class="settings-item" id="aboutSettingsItem">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center">
+                                <i class="fas fa-info-circle text-white"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-semibold text-gray-800" data-i18n="settings.about">About</div>
+                                <div class="text-xs text-gray-500" data-i18n="settings.aboutDesc">App version and information</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Logout Button -->
+            <div class="px-4 pb-8">
+                <button class="w-full bg-red-500 text-white py-4 rounded-xl font-semibold hover:bg-red-600 transition" data-i18n="settings.logout">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Page -->
+    <div id="profilePage" class="sub-page">
+        <div class="settings-header sub-page-header">
+            <button id="backProfileBtn" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
+                <i class="fas fa-arrow-left text-gray-600"></i>
+            </button>
+            <h2 class="text-xl font-bold text-gray-800" data-i18n="profile.title">Edit Profile</h2>
+            <div class="w-10"></div>
+        </div>
+        <div class="px-6 py-6">
+            <div class="avatar-upload mb-6">
+                <img id="avatarPreview" src="https://via.placeholder.com/100" alt="Avatar" class="avatar-preview">
+                <label for="avatarInput" class="avatar-upload-btn cursor-pointer" data-i18n="profile.changeAvatar">Change Avatar</label>
+                <input type="file" id="avatarInput" accept="image/*" class="hidden">
+            </div>
+            <div class="form-group">
+                <label class="form-label" data-i18n="profile.name">Full Name</label>
+                <input type="text" id="profileName" class="form-input" placeholder="Enter your name" data-i18n-placeholder="profile.namePlaceholder">
+            </div>
+            <div class="form-group">
+                <label class="form-label" data-i18n="profile.dob">Date of Birth</label>
+                <input type="date" id="profileDOB" class="form-input">
+            </div>
+            <button id="saveProfileBtn" class="w-full bg-purple-600 text-white py-4 rounded-xl font-semibold hover:bg-purple-700 transition" data-i18n="profile.save">
+                Save Changes
+            </button>
+        </div>
+    </div>
+
+    <!-- Security Page -->
+    <div id="securityPage" class="sub-page">
+        <div class="settings-header sub-page-header">
+            <button id="backSecurityBtn" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
+                <i class="fas fa-arrow-left text-gray-600"></i>
+            </button>
+            <h2 class="text-xl font-bold text-gray-800" data-i18n="security.title">Security</h2>
+            <div class="w-10"></div>
+        </div>
+        <div class="px-6 py-6">
+            <div class="form-group">
+                <label class="form-label" data-i18n="security.username">Username</label>
+                <input type="text" id="securityUsername" class="form-input" placeholder="Enter username" data-i18n-placeholder="security.usernamePlaceholder">
+            </div>
+            <div class="form-group">
+                <label class="form-label" data-i18n="security.currentPassword">Current Password</label>
+                <input type="password" id="currentPassword" class="form-input" placeholder="Enter current password" data-i18n-placeholder="security.currentPasswordPlaceholder">
+            </div>
+            <div class="form-group">
+                <label class="form-label" data-i18n="security.newPassword">New Password</label>
+                <input type="password" id="newPassword" class="form-input" placeholder="Enter new password" data-i18n-placeholder="security.newPasswordPlaceholder">
+            </div>
+            <div class="form-group">
+                <label class="form-label" data-i18n="security.confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm new password" data-i18n-placeholder="security.confirmPasswordPlaceholder">
+            </div>
+            <button id="saveSecurityBtn" class="w-full bg-purple-600 text-white py-4 rounded-xl font-semibold hover:bg-purple-700 transition" data-i18n="security.save">
+                Save Changes
+            </button>
+        </div>
+    </div>
+
+    <!-- Help & Support Page -->
+    <div id="helpPage" class="sub-page">
+        <div class="settings-header sub-page-header">
+            <button id="backHelpBtn" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
+                <i class="fas fa-arrow-left text-gray-600"></i>
+            </button>
+            <h2 class="text-xl font-bold text-gray-800" data-i18n="help.title">Help & Support</h2>
+            <div class="w-10"></div>
+        </div>
+        <div class="px-4 py-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4 px-4" data-i18n="help.faq">Frequently Asked Questions</h3>
+            <div class="faq-list mb-6">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="font-semibold text-gray-800" data-i18n="help.faq1q">How do I reset my password?</span>
+                        <i class="fas fa-chevron-down text-gray-400"></i>
+                    </div>
+                    <div class="faq-answer" data-i18n="help.faq1a">You can reset your password by going to Settings > Security and clicking on Change Password. Enter your current password and set a new one.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="font-semibold text-gray-800" data-i18n="help.faq2q">How do I change my language?</span>
+                        <i class="fas fa-chevron-down text-gray-400"></i>
+                    </div>
+                    <div class="faq-answer" data-i18n="help.faq2a">Go to Settings > Preferences > Language and select your preferred language from the list.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="font-semibold text-gray-800" data-i18n="help.faq3q">How do I update my profile?</span>
+                        <i class="fas fa-chevron-down text-gray-400"></i>
+                    </div>
+                    <div class="faq-answer" data-i18n="help.faq3a">Navigate to Settings > Profile to update your name, date of birth, and avatar. Click Save Changes when done.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span class="font-semibold text-gray-800" data-i18n="help.faq4q">How do I contact support?</span>
+                        <i class="fas fa-chevron-down text-gray-400"></i>
+                    </div>
+                    <div class="faq-answer" data-i18n="help.faq4a">You can chat with our support team using the chat box below. Our admin team is available 24/7 to assist you.</div>
+                </div>
+            </div>
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="chat-message admin">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-user-tie text-white text-xs"></i>
+                        </div>
+                        <div class="message-bubble admin">
+                            <span data-i18n="help.chatWelcome">Hello! How can I help you today?</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" class="chat-input" placeholder="Type your message..." data-i18n-placeholder="help.chatPlaceholder">
+                    <button id="chatSendBtn" class="chat-send-btn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Page -->
+    <div id="aboutPage" class="sub-page">
+        <div class="settings-header sub-page-header">
+            <button id="backAboutBtn" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition">
+                <i class="fas fa-arrow-left text-gray-600"></i>
+            </button>
+            <h2 class="text-xl font-bold text-gray-800" data-i18n="about.title">About</h2>
+            <div class="w-10"></div>
+        </div>
+        <div class="px-6 py-6">
+            <div class="bg-white rounded-2xl p-6 mb-6 text-center">
+                <div class="w-24 h-24 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-user text-white text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2" id="userNameDisplay">John Doe</h3>
+                <p class="text-sm text-gray-500 mb-4" id="userEmailDisplay">john.doe@example.com</p>
+            </div>
+            <div class="bg-white rounded-xl p-5 mb-4">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-gray-600" data-i18n="about.appName">App Name</span>
+                    <span class="font-semibold text-gray-800">Modern Mobile App</span>
+                </div>
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-gray-600" data-i18n="about.version">Version</span>
+                    <span class="font-semibold text-gray-800">1.0.0</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-600" data-i18n="about.build">Build</span>
+                    <span class="font-semibold text-gray-800">2024.01.15</span>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl p-5">
+                <h4 class="font-semibold text-gray-800 mb-3" data-i18n="about.description">Description</h4>
+                <p class="text-sm text-gray-600 leading-relaxed" data-i18n="about.descriptionText">This is a modern mobile application designed to provide you with the best user experience. Built with HTML, CSS (Tailwind), and JavaScript.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Language translations
+        const translations = {
+            en: {
+                'header.greeting': 'Hello, User',
+                'header.welcome': 'Welcome back!',
+                'hero.title1': 'Discover Amazing',
+                'hero.title2': 'Experiences',
+                'hero.description': 'Explore the best features and services we offer',
+                'hero.button': 'Get Started',
+                'quickActions.title': 'Quick Actions',
+                'quickActions.seeAll': 'See All',
+                'quickActions.home': 'Home',
+                'quickActions.wallet': 'Wallet',
+                'quickActions.rewards': 'Rewards',
+                'quickActions.settings': 'Settings',
+                'featured.title': 'Featured',
+                'featured.viewAll': 'View All',
+                'featured.premium.title': 'Premium Service',
+                'featured.premium.description': 'Get access to exclusive features',
+                'featured.premium.button': 'Subscribe',
+                'featured.offer.title': 'Special Offer',
+                'featured.offer.description': 'Limited time discount available',
+                'featured.offer.button': 'Claim Now',
+                'activity.title': 'Recent Activity',
+                'activity.seeAll': 'See All',
+                'nav.home': 'Home',
+                'nav.explore': 'Explore',
+                'nav.favorites': 'Favorites',
+                'nav.profile': 'Profile',
+                'settings.title': 'Settings',
+                'settings.account': 'Account',
+                'settings.profile': 'Profile',
+                'settings.profileDesc': 'Manage your personal information',
+                'settings.security': 'Security',
+                'settings.securityDesc': 'Password and privacy settings',
+                'settings.preferences': 'Preferences',
+                'settings.language': 'Language',
+                'settings.notifications': 'Notifications',
+                'settings.notificationsDesc': 'Manage notification preferences',
+                'settings.darkMode': 'Dark Mode',
+                'settings.darkModeDesc': 'Switch to dark theme',
+                'settings.support': 'Support',
+                'settings.help': 'Help & Support',
+                'settings.helpDesc': 'Get help and contact support',
+                'settings.about': 'About',
+                'settings.aboutDesc': 'App version and information',
+                'settings.logout': 'Logout',
+                'profile.title': 'Edit Profile',
+                'profile.changeAvatar': 'Change Avatar',
+                'profile.name': 'Full Name',
+                'profile.namePlaceholder': 'Enter your name',
+                'profile.dob': 'Date of Birth',
+                'profile.save': 'Save Changes',
+                'security.title': 'Security',
+                'security.username': 'Username',
+                'security.usernamePlaceholder': 'Enter username',
+                'security.currentPassword': 'Current Password',
+                'security.currentPasswordPlaceholder': 'Enter current password',
+                'security.newPassword': 'New Password',
+                'security.newPasswordPlaceholder': 'Enter new password',
+                'security.confirmPassword': 'Confirm Password',
+                'security.confirmPasswordPlaceholder': 'Confirm new password',
+                'security.save': 'Save Changes',
+                'help.title': 'Help & Support',
+                'help.faq': 'Frequently Asked Questions',
+                'help.faq1q': 'How do I reset my password?',
+                'help.faq1a': 'You can reset your password by going to Settings > Security and clicking on Change Password. Enter your current password and set a new one.',
+                'help.faq2q': 'How do I change my language?',
+                'help.faq2a': 'Go to Settings > Preferences > Language and select your preferred language from the list.',
+                'help.faq3q': 'How do I update my profile?',
+                'help.faq3a': 'Navigate to Settings > Profile to update your name, date of birth, and avatar. Click Save Changes when done.',
+                'help.faq4q': 'How do I contact support?',
+                'help.faq4a': 'You can chat with our support team using the chat box below. Our admin team is available 24/7 to assist you.',
+                'help.chatWelcome': 'Hello! How can I help you today?',
+                'help.chatPlaceholder': 'Type your message...',
+                'about.title': 'About',
+                'about.appName': 'App Name',
+                'about.version': 'Version',
+                'about.build': 'Build',
+                'about.description': 'Description',
+                'about.descriptionText': 'This is a modern mobile application designed to provide you with the best user experience. Built with HTML, CSS (Tailwind), and JavaScript.',
+                'login.title': 'Welcome Back',
+                'login.subtitle': 'Sign in to continue',
+                'login.usernamePlaceholder': 'Username',
+                'login.passwordPlaceholder': 'Password',
+                'login.button': 'Login',
+                'login.noAccount': 'Don\'t have an account?',
+                'login.registerLink': 'Register',
+                'register.title': 'Create Account',
+                'register.subtitle': 'Sign up to get started',
+                'register.fullNamePlaceholder': 'Full Name',
+                'register.emailPlaceholder': 'Email',
+                'register.usernamePlaceholder': 'Username',
+                'register.phonePlaceholder': 'Phone Number',
+                'register.passwordPlaceholder': 'Password',
+                'register.confirmPasswordPlaceholder': 'Confirm Password',
+                'register.button': 'Register',
+                'register.haveAccount': 'Already have an account?',
+                'register.loginLink': 'Login'
+            },
+            es: {
+                'header.greeting': 'Hola, Usuario',
+                'header.welcome': '¡Bienvenido de nuevo!',
+                'hero.title1': 'Descubre Increíbles',
+                'hero.title2': 'Experiencias',
+                'hero.description': 'Explora las mejores características y servicios que ofrecemos',
+                'hero.button': 'Comenzar',
+                'quickActions.title': 'Acciones Rápidas',
+                'quickActions.seeAll': 'Ver Todo',
+                'quickActions.home': 'Inicio',
+                'quickActions.wallet': 'Billetera',
+                'quickActions.rewards': 'Recompensas',
+                'quickActions.settings': 'Configuración',
+                'featured.title': 'Destacados',
+                'featured.viewAll': 'Ver Todo',
+                'featured.premium.title': 'Servicio Premium',
+                'featured.premium.description': 'Obtén acceso a funciones exclusivas',
+                'featured.premium.button': 'Suscribirse',
+                'featured.offer.title': 'Oferta Especial',
+                'featured.offer.description': 'Descuento por tiempo limitado disponible',
+                'featured.offer.button': 'Reclamar Ahora',
+                'activity.title': 'Actividad Reciente',
+                'activity.seeAll': 'Ver Todo',
+                'nav.home': 'Inicio',
+                'nav.explore': 'Explorar',
+                'nav.favorites': 'Favoritos',
+                'nav.profile': 'Perfil'
+            },
+            fr: {
+                'header.greeting': 'Bonjour, Utilisateur',
+                'header.welcome': 'Bon retour!',
+                'hero.title1': 'Découvrez des',
+                'hero.title2': 'Expériences Incroyables',
+                'hero.description': 'Explorez les meilleures fonctionnalités et services que nous offrons',
+                'hero.button': 'Commencer',
+                'quickActions.title': 'Actions Rapides',
+                'quickActions.seeAll': 'Voir Tout',
+                'quickActions.home': 'Accueil',
+                'quickActions.wallet': 'Portefeuille',
+                'quickActions.rewards': 'Récompenses',
+                'quickActions.settings': 'Paramètres',
+                'featured.title': 'En Vedette',
+                'featured.viewAll': 'Voir Tout',
+                'featured.premium.title': 'Service Premium',
+                'featured.premium.description': 'Accédez à des fonctionnalités exclusives',
+                'featured.premium.button': 'S\'abonner',
+                'featured.offer.title': 'Offre Spéciale',
+                'featured.offer.description': 'Réduction limitée disponible',
+                'featured.offer.button': 'Réclamer Maintenant',
+                'activity.title': 'Activité Récente',
+                'activity.seeAll': 'Voir Tout',
+                'nav.home': 'Accueil',
+                'nav.explore': 'Explorer',
+                'nav.favorites': 'Favoris',
+                'nav.profile': 'Profil',
+                'settings.title': 'Paramètres',
+                'settings.account': 'Compte',
+                'settings.profile': 'Profil',
+                'settings.profileDesc': 'Gérer vos informations personnelles',
+                'settings.security': 'Sécurité',
+                'settings.securityDesc': 'Paramètres de mot de passe et confidentialité',
+                'settings.preferences': 'Préférences',
+                'settings.language': 'Langue',
+                'settings.notifications': 'Notifications',
+                'settings.notificationsDesc': 'Gérer les préférences de notification',
+                'settings.darkMode': 'Mode Sombre',
+                'settings.darkModeDesc': 'Passer au thème sombre',
+                'settings.support': 'Support',
+                'settings.help': 'Aide et Support',
+                'settings.helpDesc': 'Obtenir de l\'aide et contacter le support',
+                'settings.about': 'À Propos',
+                'settings.aboutDesc': 'Version de l\'application et informations',
+                'settings.logout': 'Déconnexion'
+            },
+            bn: {
+                'header.greeting': 'হ্যালো, ব্যবহারকারী',
+                'header.welcome': 'আবার স্বাগতম!',
+                'hero.title1': 'আবিষ্কার করুন আশ্চর্যজনক',
+                'hero.title2': 'অভিজ্ঞতা',
+                'hero.description': 'আমরা যে সেরা বৈশিষ্ট্য এবং পরিষেবা অফার করি তা অন্বেষণ করুন',
+                'hero.button': 'শুরু করুন',
+                'quickActions.title': 'দ্রুত কাজ',
+                'quickActions.seeAll': 'সব দেখুন',
+                'quickActions.home': 'হোম',
+                'quickActions.wallet': 'ওয়ালেট',
+                'quickActions.rewards': 'পুরস্কার',
+                'quickActions.settings': 'সেটিংস',
+                'featured.title': 'বিশেষ',
+                'featured.viewAll': 'সব দেখুন',
+                'featured.premium.title': 'প্রিমিয়াম পরিষেবা',
+                'featured.premium.description': 'এক্সক্লুসিভ বৈশিষ্ট্যে অ্যাক্সেস পান',
+                'featured.premium.button': 'সাবস্ক্রাইব করুন',
+                'featured.offer.title': 'বিশেষ অফার',
+                'featured.offer.description': 'সীমিত সময়ের ছাড় উপলব্ধ',
+                'featured.offer.button': 'এখনই দাবি করুন',
+                'activity.title': 'সাম্প্রতিক কার্যক্রম',
+                'activity.seeAll': 'সব দেখুন',
+                'nav.home': 'হোম',
+                'nav.explore': 'অন্বেষণ',
+                'nav.favorites': 'পছন্দসমূহ',
+                'nav.profile': 'প্রোফাইল',
+                'settings.title': 'সেটিংস',
+                'settings.account': 'অ্যাকাউন্ট',
+                'settings.profile': 'প্রোফাইল',
+                'settings.profileDesc': 'আপনার ব্যক্তিগত তথ্য পরিচালনা করুন',
+                'settings.security': 'নিরাপত্তা',
+                'settings.securityDesc': 'পাসওয়ার্ড এবং গোপনীয়তা সেটিংস',
+                'settings.preferences': 'পছন্দসমূহ',
+                'settings.language': 'ভাষা',
+                'settings.notifications': 'বিজ্ঞপ্তি',
+                'settings.notificationsDesc': 'বিজ্ঞপ্তি পছন্দসমূহ পরিচালনা করুন',
+                'settings.darkMode': 'ডার্ক মোড',
+                'settings.darkModeDesc': 'ডার্ক থিমে পরিবর্তন করুন',
+                'settings.support': 'সহায়তা',
+                'settings.help': 'সাহায্য ও সহায়তা',
+                'settings.helpDesc': 'সাহায্য পান এবং সহায়তার সাথে যোগাযোগ করুন',
+                'settings.about': 'সম্পর্কে',
+                'settings.aboutDesc': 'অ্যাপ সংস্করণ এবং তথ্য',
+                'settings.logout': 'লগআউট',
+                'profile.title': 'প্রোফাইল সম্পাদনা',
+                'profile.changeAvatar': 'অবতার পরিবর্তন',
+                'profile.name': 'পুরো নাম',
+                'profile.namePlaceholder': 'আপনার নাম লিখুন',
+                'profile.dob': 'জন্ম তারিখ',
+                'profile.save': 'পরিবর্তন সংরক্ষণ',
+                'security.title': 'নিরাপত্তা',
+                'security.username': 'ব্যবহারকারীর নাম',
+                'security.usernamePlaceholder': 'ব্যবহারকারীর নাম লিখুন',
+                'security.currentPassword': 'বর্তমান পাসওয়ার্ড',
+                'security.currentPasswordPlaceholder': 'বর্তমান পাসওয়ার্ড লিখুন',
+                'security.newPassword': 'নতুন পাসওয়ার্ড',
+                'security.newPasswordPlaceholder': 'নতুন পাসওয়ার্ড লিখুন',
+                'security.confirmPassword': 'পাসওয়ার্ড নিশ্চিত করুন',
+                'security.confirmPasswordPlaceholder': 'নতুন পাসওয়ার্ড নিশ্চিত করুন',
+                'security.save': 'পরিবর্তন সংরক্ষণ',
+                'help.title': 'সাহায্য ও সহায়তা',
+                'help.faq': 'প্রায়শই জিজ্ঞাসিত প্রশ্ন',
+                'help.faq1q': 'আমি কীভাবে আমার পাসওয়ার্ড রিসেট করব?',
+                'help.faq1a': 'সেটিংস > নিরাপত্তা > পাসওয়ার্ড পরিবর্তনে যান। আপনার বর্তমান পাসওয়ার্ড লিখুন এবং একটি নতুন সেট করুন।',
+                'help.faq2q': 'আমি কীভাবে আমার ভাষা পরিবর্তন করব?',
+                'help.faq2a': 'সেটিংস > পছন্দসমূহ > ভাষায় যান এবং তালিকা থেকে আপনার পছন্দের ভাষা নির্বাচন করুন।',
+                'help.faq3q': 'আমি কীভাবে আমার প্রোফাইল আপডেট করব?',
+                'help.faq3a': 'সেটিংস > প্রোফাইলে যান আপনার নাম, জন্ম তারিখ এবং অবতার আপডেট করতে। সম্পন্ন হলে পরিবর্তন সংরক্ষণ ক্লিক করুন।',
+                'help.faq4q': 'আমি কীভাবে সহায়তার সাথে যোগাযোগ করব?',
+                'help.faq4a': 'নীচের চ্যাট বক্স ব্যবহার করে আপনি আমাদের সহায়তা দলের সাথে চ্যাট করতে পারেন। আমাদের অ্যাডমিন দল 24/7 আপনার সহায়তার জন্য উপলব্ধ।',
+                'help.chatWelcome': 'হ্যালো! আজ আমি আপনাকে কীভাবে সাহায্য করতে পারি?',
+                'help.chatPlaceholder': 'আপনার বার্তা টাইপ করুন...',
+                'about.title': 'সম্পর্কে',
+                'about.appName': 'অ্যাপের নাম',
+                'about.version': 'সংস্করণ',
+                'about.build': 'বিল্ড',
+                'about.description': 'বিবরণ',
+                'about.descriptionText': 'এটি একটি আধুনিক মোবাইল অ্যাপ্লিকেশন যা আপনাকে সেরা ব্যবহারকারী অভিজ্ঞতা প্রদান করার জন্য ডিজাইন করা হয়েছে। HTML, CSS (Tailwind), এবং JavaScript দিয়ে তৈরি।',
+                'login.title': 'আবার স্বাগতম',
+                'login.subtitle': 'চালিয়ে যেতে সাইন ইন করুন',
+                'login.usernamePlaceholder': 'ব্যবহারকারীর নাম',
+                'login.passwordPlaceholder': 'পাসওয়ার্ড',
+                'login.button': 'লগইন',
+                'login.noAccount': 'একটি অ্যাকাউন্ট নেই?',
+                'login.registerLink': 'নিবন্ধন',
+                'register.title': 'অ্যাকাউন্ট তৈরি করুন',
+                'register.subtitle': 'শুরু করতে সাইন আপ করুন',
+                'register.fullNamePlaceholder': 'পুরো নাম',
+                'register.emailPlaceholder': 'ইমেইল',
+                'register.usernamePlaceholder': 'ব্যবহারকারীর নাম',
+                'register.phonePlaceholder': 'ফোন নম্বর',
+                'register.passwordPlaceholder': 'পাসওয়ার্ড',
+                'register.confirmPasswordPlaceholder': 'পাসওয়ার্ড নিশ্চিত করুন',
+                'register.button': 'নিবন্ধন',
+                'register.haveAccount': 'ইতিমধ্যে একটি অ্যাকাউন্ট আছে?',
+                'register.loginLink': 'লগইন'
+            }
+        };
+
+        let currentLanguage = 'en';
+
+        // Function to change language
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+            
+            // Update placeholders
+            const placeholderElements = document.querySelectorAll('[data-i18n-placeholder]');
+            placeholderElements.forEach(element => {
+                const key = element.getAttribute('data-i18n-placeholder');
+                if (translations[lang] && translations[lang][key]) {
+                    element.placeholder = translations[lang][key];
+                }
+            });
+            
+            // Update language menu active state
+            document.querySelectorAll('.language-option').forEach(option => {
+                const icon = option.querySelector('i');
+                if (option.dataset.lang === lang) {
+                    option.classList.add('active');
+                    icon.className = 'fas fa-check-circle text-purple-600';
+                } else {
+                    option.classList.remove('active');
+                    icon.className = 'fas fa-circle text-gray-300';
+                }
+            });
+            
+            // Update language button display
+            const languageIcon = document.getElementById('languageIcon');
+            const languageText = document.getElementById('languageText');
+            
+            if (lang === 'bn') {
+                // Show "EN" text when Bengali is selected
+                languageIcon.classList.add('hidden');
+                languageText.classList.remove('hidden');
+            } else {
+                // Show globe icon when English is selected
+                languageIcon.classList.remove('hidden');
+                languageText.classList.add('hidden');
+            }
+            
+            // Update current language display in settings
+            const currentLanguageDisplay = document.getElementById('currentLanguageDisplay');
+            if (currentLanguageDisplay) {
+                currentLanguageDisplay.textContent = lang === 'bn' ? 'বাংলা' : 'English';
+            }
+            
+            // Close language menu
+            document.getElementById('languageMenu').classList.remove('show');
+        }
+
+        // Authentication functions
+        function checkAuth() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const authOverlay = document.getElementById('authOverlay');
+            const mobileContainer = document.querySelector('.mobile-container');
+            
+            if (!isLoggedIn) {
+                if (authOverlay) authOverlay.classList.remove('hidden');
+                if (mobileContainer) mobileContainer.style.display = 'none';
+            } else {
+                if (authOverlay) authOverlay.classList.add('hidden');
+                if (mobileContainer) mobileContainer.style.display = 'block';
+                // Scroll to top to show home page
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+        
+        function login(username, password) {
+            if (username && password) {
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('username', username);
+                checkAuth();
+                // Navigate to home page
+                setTimeout(() => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    // Activate home button in navigation
+                    const homeNavBtn = document.querySelector('[data-nav="home"]');
+                    if (homeNavBtn) {
+                        document.querySelectorAll('.nav-item').forEach(btn => {
+                            btn.classList.remove('text-purple-600');
+                            btn.classList.add('text-gray-400');
+                        });
+                        homeNavBtn.classList.remove('text-gray-400');
+                        homeNavBtn.classList.add('text-purple-600');
+                    }
+                }, 100);
+                return true;
+            }
+            return false;
+        }
+        
+        function register(userData) {
+            if (userData.password !== userData.confirmPassword) {
+                alert(currentLanguage === 'bn' ? 'পাসওয়ার্ড মেলে না!' : 'Passwords do not match!');
+                return false;
+            }
+            
+            if (userData.fullName && userData.email && userData.username && userData.phone && userData.password) {
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('username', userData.username);
+                localStorage.setItem('userFullName', userData.fullName);
+                localStorage.setItem('userEmail', userData.email);
+                checkAuth();
+                return true;
+            }
+            return false;
+        }
+        
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('username');
+            localStorage.removeItem('userFullName');
+            localStorage.removeItem('userEmail');
+            checkAuth();
+        }
+
+        // Add interactive functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication on page load
+            checkAuth();
+            
+            // Login form handler
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const showRegisterBtn = document.getElementById('showRegisterBtn');
+            const showLoginBtn = document.getElementById('showLoginBtn');
+            const loginPage = document.getElementById('loginPage');
+            const registerPage = document.getElementById('registerPage');
+            
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const username = document.getElementById('loginUsername').value;
+                    const password = document.getElementById('loginPassword').value;
+                    
+                    if (login(username, password)) {
+                        // Show success message briefly, then navigate
+                        const successMsg = currentLanguage === 'bn' ? 'সফলভাবে লগইন হয়েছে!' : 'Login successful!';
+                        alert(successMsg);
+                        loginForm.reset();
+                        // Small delay to ensure smooth transition to home page
+                        setTimeout(() => {
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }, 200);
+                    } else {
+                        alert(currentLanguage === 'bn' ? 'অনুগ্রহ করে সব ক্ষেত্র পূরণ করুন!' : 'Please fill in all fields!');
+                    }
+                });
+            }
+            
+            // Register form handler
+            if (registerForm) {
+                registerForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const userData = {
+                        fullName: document.getElementById('registerFullName').value,
+                        email: document.getElementById('registerEmail').value,
+                        username: document.getElementById('registerUsername').value,
+                        phone: document.getElementById('registerPhone').value,
+                        password: document.getElementById('registerPassword').value,
+                        confirmPassword: document.getElementById('registerConfirmPassword').value
+                    };
+                    
+                    if (register(userData)) {
+                        alert(currentLanguage === 'bn' ? 'সফলভাবে নিবন্ধিত হয়েছে!' : 'Registration successful!');
+                        registerForm.reset();
+                    }
+                });
+            }
+            
+            // Switch to register page
+            if (showRegisterBtn) {
+                showRegisterBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (loginPage) loginPage.classList.add('hidden');
+                    if (registerPage) registerPage.classList.remove('hidden');
+                });
+            }
+            
+            // Switch to login page
+            if (showLoginBtn) {
+                showLoginBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (registerPage) registerPage.classList.add('hidden');
+                    if (loginPage) loginPage.classList.remove('hidden');
+                });
+            }
+            
+            // Update user info if logged in
+            const savedUsername = localStorage.getItem('username');
+            const savedFullName = localStorage.getItem('userFullName');
+            const savedEmail = localStorage.getItem('userEmail');
+            
+            if (savedUsername) {
+                const headerGreeting = document.querySelector('.settings-header h2');
+                if (headerGreeting && savedFullName) {
+                    headerGreeting.textContent = savedFullName;
+                }
+                
+                const userNameDisplay = document.getElementById('userNameDisplay');
+                if (userNameDisplay && savedFullName) {
+                    userNameDisplay.textContent = savedFullName;
+                }
+                
+                const userEmailDisplay = document.getElementById('userEmailDisplay');
+                if (userEmailDisplay && savedEmail) {
+                    userEmailDisplay.textContent = savedEmail;
+                }
+            }
+            
+            // Logout button functionality
+            const logoutBtn = document.querySelector('[data-i18n="settings.logout"]');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    if (confirm(currentLanguage === 'bn' ? 'আপনি কি লগআউট করতে চান?' : 'Are you sure you want to logout?')) {
+                        logout();
+                    }
+                });
+            }
+            
+            // Language button functionality
+            const languageBtn = document.getElementById('languageBtn');
+            const languageMenu = document.getElementById('languageMenu');
+            
+            languageBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                
+                // If Bengali is selected, clicking "EN" button directly switches to English
+                if (currentLanguage === 'bn') {
+                    changeLanguage('en');
+                } else {
+                    // Otherwise, show the language menu
+                    languageMenu.classList.toggle('show');
+                }
+            });
+            
+            // Close language menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!languageBtn.contains(e.target) && !languageMenu.contains(e.target)) {
+                    languageMenu.classList.remove('show');
+                }
+            });
+            
+            // Language option clicks
+            document.querySelectorAll('.language-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const lang = this.dataset.lang;
+                    changeLanguage(lang);
+                });
+            });
+
+            // Add click animations
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    // Skip ripple for language menu items
+                    if (this.closest('.language-menu')) return;
+                    
+                    // Create ripple effect
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.classList.add('ripple');
+                    
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+
+            // Bottom navigation active state
+            const navButtons = document.querySelectorAll('.nav-item');
+            navButtons.forEach((btn) => {
+                btn.addEventListener('click', function() {
+                    const navType = this.getAttribute('data-nav');
+                    
+                    // If profile button is clicked, open settings > profile
+                    if (navType === 'profile') {
+                        // Open settings first
+                        openSettings();
+                        // Then open profile page after a short delay
+                        setTimeout(() => {
+                            const profileSettingsItem = document.getElementById('profileSettingsItem');
+                            if (profileSettingsItem) {
+                                profileSettingsItem.click();
+                            }
+                        }, 350);
+                        return;
+                    }
+                    
+                    // For other buttons, just update active state
+                    navButtons.forEach(b => {
+                        b.classList.remove('text-purple-600');
+                        b.classList.add('text-gray-400');
+                    });
+                    this.classList.remove('text-gray-400');
+                    this.classList.add('text-purple-600');
+                });
+            });
+
+            // Settings button functionality
+            const settingsBtn = document.getElementById('settingsBtn');
+            const settingsPage = document.getElementById('settingsPage');
+            const settingsOverlay = document.getElementById('settingsOverlay');
+            const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+
+            function openSettings() {
+                settingsOverlay.classList.add('show');
+                settingsPage.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeSettings() {
+                settingsOverlay.classList.remove('show');
+                settingsPage.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+
+            settingsBtn.addEventListener('click', openSettings);
+            closeSettingsBtn.addEventListener('click', closeSettings);
+            settingsOverlay.addEventListener('click', closeSettings);
+
+            // Toggle switches
+            const notificationToggle = document.getElementById('notificationToggle');
+            const darkModeToggle = document.getElementById('darkModeToggle');
+
+            if (notificationToggle) {
+                notificationToggle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+            }
+
+            if (darkModeToggle) {
+                darkModeToggle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    document.body.classList.toggle('dark-mode');
+                    // Save dark mode preference
+                    localStorage.setItem('darkMode', this.classList.contains('active'));
+                });
+                
+                // Load dark mode preference
+                if (localStorage.getItem('darkMode') === 'true') {
+                    darkModeToggle.classList.add('active');
+                    document.body.classList.add('dark-mode');
+                }
+            }
+
+            // Language item in settings - opens language menu
+            const languageSettingsItem = document.getElementById('languageSettingsItem');
+            if (languageSettingsItem) {
+                languageSettingsItem.addEventListener('click', function() {
+                    // Close settings first
+                    closeSettings();
+                    // Small delay to allow settings to close, then open language menu
+                    setTimeout(() => {
+                        const languageBtn = document.getElementById('languageBtn');
+                        if (languageBtn) {
+                            languageBtn.click();
+                        }
+                    }, 300);
+                });
+            }
+
+            // Sub-page navigation functions
+            function openSubPage(pageId) {
+                const page = document.getElementById(pageId);
+                if (page) {
+                    page.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+
+            function closeSubPage(pageId) {
+                const page = document.getElementById(pageId);
+                if (page) {
+                    page.classList.remove('show');
+                    document.body.style.overflow = '';
+                }
+            }
+
+            // Profile page
+            const profileSettingsItem = document.getElementById('profileSettingsItem');
+            const profilePage = document.getElementById('profilePage');
+            const backProfileBtn = document.getElementById('backProfileBtn');
+            const avatarInput = document.getElementById('avatarInput');
+            const avatarPreview = document.getElementById('avatarPreview');
+            const saveProfileBtn = document.getElementById('saveProfileBtn');
+
+            if (profileSettingsItem) {
+                profileSettingsItem.addEventListener('click', function() {
+                    closeSettings();
+                    setTimeout(() => openSubPage('profilePage'), 300);
+                });
+            }
+
+            if (backProfileBtn) {
+                backProfileBtn.addEventListener('click', function() {
+                    closeSubPage('profilePage');
+                    setTimeout(() => openSettings(), 300);
+                });
+            }
+
+            if (avatarInput) {
+                avatarInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            avatarPreview.src = e.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            if (saveProfileBtn) {
+                saveProfileBtn.addEventListener('click', function() {
+                    const name = document.getElementById('profileName').value;
+                    const dob = document.getElementById('profileDOB').value;
+                    if (name) {
+                        document.querySelector('.settings-header h2').textContent = name;
+                        document.getElementById('userNameDisplay').textContent = name;
+                    }
+                    alert(currentLanguage === 'bn' ? 'প্রোফাইল সফলভাবে আপডেট হয়েছে!' : 'Profile updated successfully!');
+                    closeSubPage('profilePage');
+                    setTimeout(() => openSettings(), 300);
+                });
+            }
+
+            // Security page
+            const securitySettingsItem = document.getElementById('securitySettingsItem');
+            const securityPage = document.getElementById('securityPage');
+            const backSecurityBtn = document.getElementById('backSecurityBtn');
+            const saveSecurityBtn = document.getElementById('saveSecurityBtn');
+
+            if (securitySettingsItem) {
+                securitySettingsItem.addEventListener('click', function() {
+                    closeSettings();
+                    setTimeout(() => openSubPage('securityPage'), 300);
+                });
+            }
+
+            if (backSecurityBtn) {
+                backSecurityBtn.addEventListener('click', function() {
+                    closeSubPage('securityPage');
+                    setTimeout(() => openSettings(), 300);
+                });
+            }
+
+            if (saveSecurityBtn) {
+                saveSecurityBtn.addEventListener('click', function() {
+                    const newPassword = document.getElementById('newPassword').value;
+                    const confirmPassword = document.getElementById('confirmPassword').value;
+                    if (newPassword && newPassword === confirmPassword) {
+                        alert(currentLanguage === 'bn' ? 'পাসওয়ার্ড সফলভাবে পরিবর্তন হয়েছে!' : 'Password changed successfully!');
+                        document.getElementById('currentPassword').value = '';
+                        document.getElementById('newPassword').value = '';
+                        document.getElementById('confirmPassword').value = '';
+                        closeSubPage('securityPage');
+                        setTimeout(() => openSettings(), 300);
+                    } else {
+                        alert(currentLanguage === 'bn' ? 'পাসওয়ার্ড মেলে না!' : 'Passwords do not match!');
+                    }
+                });
+            }
+
+            // Help & Support page
+            const helpSettingsItem = document.getElementById('helpSettingsItem');
+            const helpPage = document.getElementById('helpPage');
+            const backHelpBtn = document.getElementById('backHelpBtn');
+            const chatInput = document.getElementById('chatInput');
+            const chatSendBtn = document.getElementById('chatSendBtn');
+            const chatMessages = document.getElementById('chatMessages');
+
+            if (helpSettingsItem) {
+                helpSettingsItem.addEventListener('click', function() {
+                    closeSettings();
+                    setTimeout(() => openSubPage('helpPage'), 300);
+                });
+            }
+
+            if (backHelpBtn) {
+                backHelpBtn.addEventListener('click', function() {
+                    closeSubPage('helpPage');
+                    setTimeout(() => openSettings(), 300);
+                });
+            }
+
+            // FAQ accordion
+            document.querySelectorAll('.faq-item').forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', function() {
+                    const isActive = item.classList.contains('active');
+                    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+                    if (!isActive) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+
+            // Chat functionality
+            function addChatMessage(text, isUser) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `chat-message ${isUser ? 'user' : 'admin'}`;
+                messageDiv.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br ${isUser ? 'from-purple-400 to-purple-600' : 'from-blue-400 to-blue-600'} flex items-center justify-center flex-shrink-0">
+                        <i class="fas ${isUser ? 'fa-user' : 'fa-user-tie'} text-white text-xs"></i>
+                    </div>
+                    <div class="message-bubble ${isUser ? 'user' : 'admin'}">
+                        ${text}
+                    </div>
+                `;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            if (chatSendBtn && chatInput) {
+                chatSendBtn.addEventListener('click', function() {
+                    const message = chatInput.value.trim();
+                    if (message) {
+                        addChatMessage(message, true);
+                        chatInput.value = '';
+                        
+                        // Simulate admin response
+                        setTimeout(() => {
+                            const responses = currentLanguage === 'bn' 
+                                ? ['ধন্যবাদ আপনার বার্তার জন্য। আমি আপনাকে কীভাবে সাহায্য করতে পারি?', 'আমি আপনার সমস্যা বুঝতে পেরেছি। দয়া করে আরও বিস্তারিত জানান।', 'আমরা আপনার সমস্যা সমাধানে কাজ করছি।']
+                                : ['Thank you for your message. How can I assist you?', 'I understand your issue. Please provide more details.', 'We are working on resolving your issue.'];
+                            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                            addChatMessage(randomResponse, false);
+                        }, 1000);
+                    }
+                });
+
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        chatSendBtn.click();
+                    }
+                });
+            }
+
+            // About page
+            const aboutSettingsItem = document.getElementById('aboutSettingsItem');
+            const aboutPage = document.getElementById('aboutPage');
+            const backAboutBtn = document.getElementById('backAboutBtn');
+
+            if (aboutSettingsItem) {
+                aboutSettingsItem.addEventListener('click', function() {
+                    closeSettings();
+                    setTimeout(() => openSubPage('aboutPage'), 300);
+                });
+            }
+
+            if (backAboutBtn) {
+                backAboutBtn.addEventListener('click', function() {
+                    closeSubPage('aboutPage');
+                    setTimeout(() => openSettings(), 300);
+                });
+            }
+        });
+    </script>
+
+    <style>
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(0);
+            animation: ripple-animation 0.6s ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        button {
+            position: relative;
+            overflow: hidden;
+        }
+    </style>
+</body>
+</html>
+
