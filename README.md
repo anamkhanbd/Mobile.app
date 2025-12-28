@@ -34,7 +34,7 @@ The mobile app focuses on high-impact modules for remote management:
 
 ## 📸 App Interface
 <p align="center">
-  <img src="https://github.com/anamkhanbd/Mobile.app/blob/161dfba010e0fb3283c00c3cbd47398f5b2272e3/Screenshot_4.png?raw=true" width="300" alt="Mobile App Screenshot">
+  <img src="https://github.com/anamkhanbd/Mobile.app/blob/161dfba010e0fb3283c00c3cbd47398f5b2272e3/Screenshot_4.png?raw=true" width="100%" alt="Mobile App Screenshot">
 </p>
 
 *The intuitive grid-based UI ensures that all critical business modules are just one tap away.*
